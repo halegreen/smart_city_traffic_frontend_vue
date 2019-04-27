@@ -8,6 +8,7 @@ import Router from 'vue-router'
 import http from '@/utils/httpRequest'
 import { isURL } from '@/utils/validate'
 import { clearLoginInfo } from '@/utils'
+import { nav } from '@/mock/modules/sys-menu'
 
 Vue.use(Router)
 
@@ -74,8 +75,8 @@ router.beforeEach((to, from, next) => {
         sessionStorage.setItem('permissions', JSON.stringify(data.permissions || '[]'))
         next({ ...to, replace: true })
       } else {
-        sessionStorage.setItem('menuList', '[]')
-        sessionStorage.setItem('permissions', '[]')
+        sessionStorage.setItem('menuList', nav().data.menuList)
+        sessionStorage.setItem('permissions', nav().data.permissions)
         next()
       }
     }).catch((e) => {

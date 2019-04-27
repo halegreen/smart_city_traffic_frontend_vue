@@ -2,8 +2,8 @@
   <nav class="site-navbar" :class="'site-navbar--' + navbarLayoutType">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;">城市消防监控后台</a>
-        <a class="site-navbar__brand-mini" href="javascript:;">CityFire</a>
+        <a class="site-navbar__brand-lg" href="javascript:;">交通优化决策后台</a>
+        <a class="site-navbar__brand-mini" href="javascript:;">SmartTraffic</a>
       </h1>
     </div>
     <div class="site-navbar__body clearfix">
@@ -24,17 +24,6 @@
             </el-badge>
           </template>
         </el-menu-item>
-        <el-menu-item index="2">
-         <el-badge value="">
-            <a href="https://gitee.com/ahqcode/City_Fire" target="_blank">代码库</a>
-          </el-badge>
-        </el-menu-item>
-        <el-submenu index="3">
-          <template slot="title">开发记录</template>
-          <el-menu-item index="2-1"><a href="" target="_blank">CSDN</a></el-menu-item>
-          <el-menu-item index="2-2"><a href="" target="_blank">公众号</a></el-menu-item>
-          <el-menu-item index="2-3"><a href="https://github.com/huqi1/City_Fire" target="_blank">GitHub</a></el-menu-item>
-        </el-submenu>
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">

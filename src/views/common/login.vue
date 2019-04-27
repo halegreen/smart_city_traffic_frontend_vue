@@ -3,8 +3,8 @@
     <div class="site-content__wrapper">
       <div class="site-content">
         <div class="brand-info">
-          <h2 class="brand-info__text">城市消防监控后台管理系统</h2>
-          <p class="brand-info__intro">区域管理、设备分类、设备管理、预计系统、统计报表</p>
+          <h2 class="brand-info__text">智慧城市交通优化决策与管理系统</h2>
+          <p class="brand-info__intro">交通信号灯方案优化与决策、交通路网管理、交通流量管理、交通流量分析与挖掘、分布式批量任务执行引擎</p>
         </div>
         <div class="login-main">
           <h3 class="login-title">管理员登录</h3>
