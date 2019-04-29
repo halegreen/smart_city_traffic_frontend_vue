@@ -33,13 +33,16 @@
         visible: false,
         dataForm: {
           id: 0,
-          addTime: '',
-          updateTime : '',
-          handlerName: '',
-          executorParam: '',
-          executorTimeout: '',
-          executorFailRetryCount: '',
-          taskStatus: ''
+          linkId: '',
+          timeStamp: '',
+          startHourAndMinute: '',
+          duration: '',
+          timeRange: '',
+          volumeQ: '',
+          thetaT: '',
+          velocityV: '',
+          avgQueueLength: '',
+          avgQueueTime: ''
         },
         dataRule: {
           handlerName: [
@@ -59,18 +62,20 @@
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/task/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/plan/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.addTime = data.task.addTime
-                this.dataForm.updateTime = data.task.updateTime
-                this.dataForm.handlerName = data.task.handlerName
-                this.dataForm.executorParam = data.task.executorParam
-                this.dataForm.executorTimeout = data.task.executorTimeout
-                this.dataForm.executorFailRetryCount = data.task.executorFailRetryCount
-                this.dataForm.taskStatus = data.task.taskStatus
+                this.dataForm.linkId = data.flow.linkId
+                this.dataForm.timeStamp = data.flow.timeStamp
+                this.dataForm.duration = data.flow.duration
+                this.dataForm.timeRange = data.flow.timeRange
+                this.dataForm.volumeQ = data.flow.volumeQ
+                this.dataForm.thetaT = data.flow.thetaT
+                this.dataForm.velocityV = data.flow.velocityV
+                this.dataForm.avgQueueLength = data.flow.avgQueueLength
+                this.dataForm.avgQueueTime = data.flow.avgQueueTime
               }
             })
           }
@@ -81,15 +86,15 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/task/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/plan/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'handlerName': this.dataForm.handlerName,
-                'executorParam': this.dataForm.executorParam,
-                'executorTimeout': this.dataForm.executorTimeout,
-                'cronExpression': this.dataForm.cronExpression,
-                'executorFailRetryCount': this.dataForm.executorFailRetryCount,
+                'handlerName': this.dataForm.trafficLightId,
+                'executorParam': this.dataForm.junctionId,
+                'executorTimeout': this.dataForm.timePeriod,
+                'cronExpression': this.dataForm.linkIdList,
+                'executorFailRetryCount': this.dataForm.phaseIdList,
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

@@ -2,12 +2,12 @@
   <div class="mod-task">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.userName" placeholder="任务ID" clearable></el-input>
+        <el-input v-model="dataForm.id" placeholder="任务ID" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button  type="danger" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
+        <el-button  type="primary" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
         <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -72,8 +72,9 @@
         align="center"
         label="任务状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 0" size="small">正在运行</el-tag>
-          <el-tag v-else size="small" type="danger">执行完成</el-tag>
+          <el-tag v-if="scope.row.status === 0" size="success">执行完成</el-tag>
+          <el-tag v-else size="small" type="info">尚未执行</el-tag>
+          <el-tag v-else size="small" type="warning">正在执行</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -211,7 +212,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/task/simulation/run'),
+            url: this.$http.adornUrl('/task/run'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

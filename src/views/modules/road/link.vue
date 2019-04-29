@@ -1,14 +1,18 @@
 <template>
-  <div class="mod-task">
+  <div class="mod-flow">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item label="路段id">
+        <el-select v-model="dataForm.linkId" placeholder="请选择路段id">
+        <el-option
+            v-for="item in linkIdList"
+            :key="item.id"
+            :label="item.linkId"
+            :value="item.linkId">   
+        </el-option>
+        </el-select>
+       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.userName" placeholder="任务ID" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button  type="danger" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
-        <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" @click="getDataList()">查询</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -20,49 +24,79 @@
       <el-table-column
         type="selection"
         header-align="center"
-        align="center"
-        width="50">
+        align="center">
       </el-table-column>
       <el-table-column
         prop="id"
         header-align="center"
         align="center"
-        width="80"
-        label="ID">
+        label="Flow ID">
       </el-table-column>
       <el-table-column
-        prop="addTime"
+        prop="linkId"
         header-align="center"
         align="center"
-        label="新建时间">
+        label="路段id">
       </el-table-column>
       <el-table-column
-        prop="updateTime"
+        prop="timeStamp"
         header-align="center"
         align="center"
-        label="更新时间">
+        label="记录时间戳">
       </el-table-column>
       <el-table-column
-        prop="handlerName"
+        prop="startHourAndMinute"
         header-align="center"
         align="center"
-        label="处理器名称">
+        label="开始时间分钟">
       </el-table-column>
       <el-table-column
-        prop="executorParam"
+        prop="duration"
         header-align="center"
         align="center"
-        label="执行参数">
+        label="持续时间(秒)">
       </el-table-column>
       <el-table-column
-        prop="status"
+        prop="timeRange"
         header-align="center"
         align="center"
-        label="任务状态">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 0" size="small">正在运行</el-tag>
-          <el-tag v-else size="small" type="danger">执行完成</el-tag>
-        </template>
+        label="一天中时段">
+      </el-table-column>
+      <el-table-column
+        prop="curPhaseId"
+        header-align="center"
+        align="center"
+        label="前一时刻相位id">
+      </el-table-column>
+      <el-table-column
+        prop="volumeQ"
+        header-align="center"
+        align="center"
+        label="流量">
+      </el-table-column>
+      <el-table-column
+        prop="thetaT"
+        header-align="center"
+        align="center"
+        label="时间占有率">
+      </el-table-column>
+      <el-table-column
+        prop="velocityV"
+        header-align="center"
+        align="center"
+        label="平均行程速度">
+      </el-table-column>
+      <el-table-column
+        prop="avgQueueLength"
+        header-align="center"
+        align="center"
+        label="平均排队长度">
+      </el-table-column>
+      <el-table-column
+        prop="avgQueueTime"
+        header-align="center"
+        align="center"
+        label="平均排队延误时间">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -91,7 +125,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './task-add-or-update'
+ import AddOrUpdate from './link-update'
   export default {
     data () {
       return {
@@ -104,7 +138,8 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false
+        addOrUpdateVisible: false,
+        linkIdList: []
       }
     },
     components: {
@@ -112,13 +147,14 @@
     },
     activated () {
       this.getDataList()
+      this.getLinkIdList()
     },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/task/simulation/list'),
+          url: this.$http.adornUrl('/link/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -169,7 +205,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/task/simulation/delete'),
+            url: this.$http.adornUrl('/link/delete'),
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
@@ -188,36 +224,8 @@
           })
         }).catch(() => {})
       },
-      // 立即执行
-      runHandle (id) {
-        var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.jobId
-        })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/task/simulation/run'),
-            method: 'post',
-            data: this.$http.adornData(ids, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        }).catch(() => {})
-      },
+      //
+      
     }
   }
 </script>
