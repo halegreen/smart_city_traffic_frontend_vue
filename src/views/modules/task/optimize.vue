@@ -28,7 +28,7 @@
         header-align="center"
         align="center"
         width="80"
-        label="ID">
+        label="Task ID">
       </el-table-column>
       <el-table-column
         prop="addTime"
@@ -60,9 +60,9 @@
         align="center"
         label="任务状态">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 0" size="success">执行完成</el-tag>
-          <el-tag v-else size="small" type="info">尚未执行</el-tag>
-          <el-tag v-else size="small" type="warning">正在执行</el-tag>
+          <el-tag v-if="scope.row.taskStatus === '0'" type="info" size="medium">尚未执行</el-tag>
+          <el-tag v-if="scope.row.taskStatus === '1'" type="warning" size="medium">正在执行</el-tag>
+          <el-tag v-if="scope.row.taskStatus === '2'" type="success" size="medium">执行完成</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -72,8 +72,9 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button>
-          <el-button  type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
+          <el-button  v-if="scope.row.taskStatus === '2'" type="text" size="small" @click="checkReuslt(scope.row.id)">查看执行结果</el-button>
+          <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button  type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,11 +89,13 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <check-result v-if="checkResultVisible" ref="checkResult" ></check-result>
   </div>
 </template>
 
 <script>
   import AddOrUpdate from './task-add-or-update'
+  import checkResult from './task-check-result'
   export default {
     data () {
       return {
@@ -105,11 +108,13 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false
+        addOrUpdateVisible: false,
+        checkResultVisible: false,
       }
     },
     components: {
-      AddOrUpdate
+      AddOrUpdate,
+      checkResult
     },
     activated () {
       this.getDataList()
@@ -192,7 +197,7 @@
       // 立即执行
       runHandle (id) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
-          return item.jobId
+          return item.id
         })
         this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '立即执行' : '批量立即执行'}]操作?`, '提示', {
           confirmButtonText: '确定',
@@ -218,6 +223,12 @@
             }
           })
         }).catch(() => {})
+      },
+      checkReuslt (id) {
+        this.checkResultVisible = true
+        this.$nextTick(() => {
+          this.$refs.checkResult.init(id)
+        })
       },
     }
   }

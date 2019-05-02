@@ -1,18 +1,12 @@
 <template>
   <div class="mod-flow">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item label="路段id">
-        <el-select v-model="dataForm.linkId" placeholder="请选择路段id">
-        <el-option
-            v-for="item in linkIdList"
-            :key="item.id"
-            :label="item.linkId"
-            :value="item.linkId">   
-        </el-option>
-        </el-select>
-       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getDataList()">查询</el-button>
+        <el-input v-model="dataForm.id" placeholder="路段ID" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+        <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -30,7 +24,7 @@
         prop="id"
         header-align="center"
         align="center"
-        label="Flow ID">
+        label="Link ID">
       </el-table-column>
       <el-table-column
         prop="linkId"
@@ -39,64 +33,52 @@
         label="路段id">
       </el-table-column>
       <el-table-column
-        prop="timeStamp"
+        prop="nodeIdBegin"
         header-align="center"
         align="center"
-        label="记录时间戳">
+        label="连接的起始节点">
       </el-table-column>
       <el-table-column
-        prop="startHourAndMinute"
+        prop="nodeIdEnd"
         header-align="center"
         align="center"
-        label="开始时间分钟">
+        label="连接的终止节点">
       </el-table-column>
       <el-table-column
-        prop="duration"
+        prop="roadId"
         header-align="center"
         align="center"
-        label="持续时间(秒)">
+        label="所在的道路id">
       </el-table-column>
       <el-table-column
-        prop="timeRange"
+        prop="areaId"
         header-align="center"
         align="center"
-        label="一天中时段">
+        label="所在的区域id">
       </el-table-column>
       <el-table-column
-        prop="curPhaseId"
+        prop="linkLength"
         header-align="center"
         align="center"
-        label="前一时刻相位id">
+        label="路段长度">
       </el-table-column>
       <el-table-column
-        prop="volumeQ"
+        prop="linkDirId"
         header-align="center"
         align="center"
-        label="流量">
+        label="路段方向">
       </el-table-column>
       <el-table-column
-        prop="thetaT"
+        prop="linkSpeedLimit"
         header-align="center"
         align="center"
-        label="时间占有率">
+        label="路段限速">
       </el-table-column>
       <el-table-column
-        prop="velocityV"
+        prop="roadSpeedLimit"
         header-align="center"
         align="center"
-        label="平均行程速度">
-      </el-table-column>
-      <el-table-column
-        prop="avgQueueLength"
-        header-align="center"
-        align="center"
-        label="平均排队长度">
-      </el-table-column>
-      <el-table-column
-        prop="avgQueueTime"
-        header-align="center"
-        align="center"
-        label="平均排队延误时间">
+        label="道路限速">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -105,8 +87,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button>
-          <el-button  type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
+          <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button  type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -147,14 +129,13 @@
     },
     activated () {
       this.getDataList()
-      this.getLinkIdList()
     },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/link/list'),
+          url: this.$http.adornUrl('/road/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -205,7 +186,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/link/delete'),
+            url: this.$http.adornUrl('/road/delete'),
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
