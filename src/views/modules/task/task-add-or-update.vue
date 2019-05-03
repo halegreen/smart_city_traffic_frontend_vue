@@ -11,7 +11,6 @@
         <el-input  type="textarea"  :rows="2"  v-model="dataForm.executorParam" placeholder="仿真参数:configFilePath={仿真配置文件路径},simulateTimePeriod={仿真时长(秒)} 
        算法优化参数：junctionId={优化路口id},timeRange={时间段0,1,2...},modelType={qlearning/spsa}"></el-input>
       </el-form-item>
-
       <el-form-item label="执行器超时时间" prop="executorTimeout">
         <el-input v-model="dataForm.executorTimeout" placeholder="执行器超时时间"></el-input>
       </el-form-item>

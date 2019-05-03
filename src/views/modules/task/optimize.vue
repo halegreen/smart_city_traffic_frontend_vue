@@ -55,6 +55,18 @@
         label="执行参数">
       </el-table-column>
       <el-table-column
+        prop="executorTimeout"
+        header-align="center"
+        align="center"
+        label="执行器超时时间">
+      </el-table-column>
+      <el-table-column
+        prop="executorFailRetryCount"
+        header-align="center"
+        align="center"
+        label="执行器失败重试次数">
+      </el-table-column>
+      <el-table-column
         prop="taskStatus"
         header-align="center"
         align="center"
@@ -72,7 +84,7 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button  v-if="scope.row.taskStatus === '2'" type="text" size="small" @click="checkReuslt(scope.row.id)">查看执行结果</el-button>
+          <el-button  v-if="scope.row.taskStatus === '2'" type="text" size="small" @click="checkResult(scope.row.id)">查看执行结果</el-button>
           <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button  type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
@@ -89,13 +101,13 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
-    <check-result v-if="checkResultVisible" ref="checkResult" ></check-result>
+    <checkResult v-if="checkResultVisible" ref="checkResult" @refreshDataList="getDataList"></checkResult>
   </div>
 </template>
 
 <script>
   import AddOrUpdate from './task-add-or-update'
-  import checkResult from './task-check-result'
+  import CheckResult from './task-check-result'
   export default {
     data () {
       return {
@@ -114,7 +126,7 @@
     },
     components: {
       AddOrUpdate,
-      checkResult
+      CheckResult
     },
     activated () {
       this.getDataList()
@@ -215,6 +227,7 @@
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
+                  
                   this.getDataList()
                 }
               })
@@ -224,10 +237,19 @@
           })
         }).catch(() => {})
       },
-      checkReuslt (id) {
-        this.checkResultVisible = true
-        this.$nextTick(() => {
-          this.$refs.checkResult.init(id)
+      checkResult (id) {
+        this.dataListLoading = true
+        this.$http({
+          url: this.$http.adornUrl(`/task/info/${id}`),
+          method: 'get',
+          params: this.$http.adornParams()
+        }).then(({data}) => {
+          this.dataForm = data.task
+          this.dataListLoading = false
+          this.checkResultVisible = true
+          this.$nextTick(() => {
+            this.$refs.checkResult.init(this.dataForm)
+          })
         })
       },
     }
