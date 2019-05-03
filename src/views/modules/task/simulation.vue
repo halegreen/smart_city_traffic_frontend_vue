@@ -84,7 +84,7 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button  v-if="scope.row.taskStatus === '2'" type="text" size="small" @click="checkResult(scope.row.id)">查看执行结果</el-button>
+          <el-button  v-if="scope.row.taskStatus === '2'" type="primary" size="small" @click="checkResult(scope.row.id)">查看执行结果</el-button>
           <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button  type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
