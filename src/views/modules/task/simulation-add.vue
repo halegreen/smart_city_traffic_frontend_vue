@@ -1,18 +1,14 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '设置参数' : '设置参数'"
+    :title="!dataForm.id ? '设置仿真参数' : '设置仿真参数'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="100px">
-      <el-form-item label="处理器名称" prop="handlerName">
-        <el-input v-model="dataForm.handlerName" placeholder="处理器名称,如Simulation / Optimize"></el-input>
+      <el-form-item label="仿真配置文件路径" prop="configFilePath">
+        <el-input v-model="dataForm.configFilePath" placeholder="仿真配置文件路径: 本地路径"></el-input>
       </el-form-item>
-      <el-form-item label="任务执行参数" prop="executorParam">
-        <el-input  type="textarea"  :rows="2"  v-model="dataForm.executorParam" placeholder="仿真参数:configFilePath={仿真配置文件路径},simulateTimePeriod={仿真时长(秒)} 
-       算法优化参数：junctionId={优化路口id},timeRange={时间段0,1,2...},modelType={qlearning/spsa}"></el-input>
-      </el-form-item>
-      <el-form-item label="执行器超时时间" prop="executorTimeout">
-        <el-input v-model="dataForm.executorTimeout" placeholder="执行器超时时间"></el-input>
+      <el-form-item label="仿真时长" prop="simulateTimePeriod">
+        <el-input v-model="dataForm.simulateTimePeriod" placeholder="仿真时长：单位（秒）"></el-input>
       </el-form-item>
       <el-form-item label="执行器失败重试次数" prop="executorFailRetryCount">
         <el-input v-model="dataForm.executorFailRetryCount" placeholder="执行器失败重试次数"></el-input>
@@ -42,14 +38,13 @@
           taskStatus: "0"
         },
         dataRule: {
-          handlerName: [
-            { required: true, message: '执行器名称不能为空', trigger: 'blur' }
+          configFilePath: [
+            { required: true, message: '仿真配置文件路径不能为空', trigger: 'blur' }
           ],
-          executorParam: [
-            { required: true, message: '执行器参数不能为空', triggger: 'blur' }
+          simulateTimePeriod: [
+            { required: true, message: '仿真时长不能为空', triggger: 'blur' }
           ]
         },
-        executorParam : '',
       }
     },
     methods: {
@@ -83,14 +78,16 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.executorParam = "configFilePath=" + this.dataForm.configFilePath + ",simulateTimePeriod=" + this.dataForm.simulateTimePeriod
+            console.log(this.executorParam)
             this.$http({
               url: this.$http.adornUrl(`/task/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'handlerName': this.dataForm.handlerName,
-                'executorParam': this.dataForm.executorParam,
-                'executorTimeout': this.dataForm.executorTimeout,
+                'handlerName': this.handlerType,
+                'executorParam': this.executorParam,
+                'executorTimeout': 0,
                 'executorFailRetryCount': this.dataForm.executorFailRetryCount,
               })
             }).then(({data}) => {

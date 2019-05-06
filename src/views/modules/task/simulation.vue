@@ -8,7 +8,6 @@
         <el-button @click="getDataList()">查询</el-button>
         <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button  type="primary" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
-        <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -106,7 +105,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './task-add-or-update'
+  import AddOrUpdate from './simulation-add'
   import CheckResult from './task-check-result'
   export default {
     data () {
@@ -173,7 +172,7 @@
       addOrUpdateHandle (id) {
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.addOrUpdate.init(id, "Simulation")
         })
       },
       // 删除
@@ -187,9 +186,9 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/task/simulation/delete'),
-            method: 'post',
-            data: this.$http.adornData(userIds, false)
+            url: this.$http.adornUrl(`/task/delete/${this.dataForm.id}`),
+            method: 'delete',
+            data: this.$http.adornParams()
           }).then(({data}) => {
             if (data && data.code === 0) {
               this.$message({

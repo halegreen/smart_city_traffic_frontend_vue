@@ -1,21 +1,17 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '设置参数' : '设置参数'"
+    :title="!dataForm.id ? '设置算法优化参数' : '设置算法优化参数'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="100px">
-      <el-form-item label="处理器名称" prop="handlerName">
-        <el-input v-model="dataForm.handlerName" placeholder="处理器名称,如Simulation / Optimize"></el-input>
+      <el-form-item label="路口ID" prop="junctionId">
+        <el-input v-model="dataForm.junctionId" placeholder="输入需要优化的路口id"></el-input>
       </el-form-item>
-      <el-form-item label="任务执行参数" prop="executorParam">
-        <el-input  type="textarea"  :rows="2"  v-model="dataForm.executorParam" placeholder="仿真参数:configFilePath={仿真配置文件路径},simulateTimePeriod={仿真时长(秒)} 
-       算法优化参数：junctionId={优化路口id},timeRange={时间段0,1,2...},modelType={qlearning/spsa}"></el-input>
+      <el-form-item label="时间段" prop="timeRange">
+        <el-input v-model="dataForm.timeRange" placeholder="输入需要优化的该路口的时间段"></el-input>
       </el-form-item>
-      <el-form-item label="执行器超时时间" prop="executorTimeout">
-        <el-input v-model="dataForm.executorTimeout" placeholder="执行器超时时间"></el-input>
-      </el-form-item>
-      <el-form-item label="执行器失败重试次数" prop="executorFailRetryCount">
-        <el-input v-model="dataForm.executorFailRetryCount" placeholder="执行器失败重试次数"></el-input>
+      <el-form-item label="算法模型" prop="modelType">
+        <el-input v-model="dataForm.executorFailRetryCount" placeholder="输入算法模型类型名称qlearning/spsa"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -42,14 +38,13 @@
           taskStatus: "0"
         },
         dataRule: {
-          handlerName: [
-            { required: true, message: '执行器名称不能为空', trigger: 'blur' }
+          junctionId: [
+            { required: true, message: '优化路口不能为空', trigger: 'blur' }
           ],
-          executorParam: [
-            { required: true, message: '执行器参数不能为空', triggger: 'blur' }
+          timeRange: [
+            { required: true, message: '优化时间段不能为空', triggger: 'blur' }
           ]
         },
-        executorParam : '',
       }
     },
     methods: {
@@ -83,15 +78,17 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.executorParam = "junctionId=" + this.dataForm.junctionId + ",timeRange=" + this.dataForm.timeRange + ",modelType=" + this.dataForm.modelType
+            console.log(this.executorParam)
             this.$http({
               url: this.$http.adornUrl(`/task/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'handlerName': this.dataForm.handlerName,
-                'executorParam': this.dataForm.executorParam,
-                'executorTimeout': this.dataForm.executorTimeout,
-                'executorFailRetryCount': this.dataForm.executorFailRetryCount,
+                'handlerName': this.handlerType,
+                'executorParam': this.executorParam,
+                'executorTimeout': 0,
+                'executorFailRetryCount': 3,
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
