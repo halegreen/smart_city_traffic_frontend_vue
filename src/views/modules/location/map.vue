@@ -8,9 +8,6 @@
                               :on-search-result="onSearchResult">
           </el-amap-search-box>
         </el-form-item>
-        <el-form-item>
-          <el-button v-if="isAuth('operate:map:save')" type="primary" @click="AddLocation()">新增</el-button>
-        </el-form-item>
       </el-form>
 
       <div class="amap-wrapper">
@@ -68,8 +65,8 @@
         },
         // 地图搜索
         searchOption: {
-          city: '成都',
-          citylimit: true
+          city: '北京',
+          citylimit: false
         },
         addLocationVisible: false,
         //地图
