@@ -3,9 +3,9 @@
     :title="!dataForm.id ? '设置仿真参数' : '设置仿真参数'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="100px">
-      <el-form-item label="仿真配置文件路径" prop="configFilePath">
-        <el-input v-model="dataForm.configFilePath" placeholder="仿真配置文件路径: 本地路径"></el-input>
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="200px">
+      <el-form-item label="仿真配置文件ID" prop="configFileId">
+        <el-input v-model="dataForm.configFileId" placeholder="仿真配置文件id: 可在仿真配置列表查看"></el-input>
       </el-form-item>
       <el-form-item label="仿真时长" prop="simulateTimePeriod">
         <el-input v-model="dataForm.simulateTimePeriod" placeholder="仿真时长：单位（秒）"></el-input>
@@ -37,9 +37,10 @@
           executorFailRetryCount: '',
           taskStatus: "0"
         },
+        executorParam: '',
         dataRule: {
-          configFilePath: [
-            { required: true, message: '仿真配置文件路径不能为空', trigger: 'blur' }
+          configFileId: [
+            { required: true, message: '仿真配置文件不能为空', trigger: 'blur' }
           ],
           simulateTimePeriod: [
             { required: true, message: '仿真时长不能为空', triggger: 'blur' }
@@ -78,31 +79,40 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            this.executorParam = "configFilePath=" + this.dataForm.configFilePath + ",simulateTimePeriod=" + this.dataForm.simulateTimePeriod
-            console.log(this.executorParam)
+
             this.$http({
-              url: this.$http.adornUrl(`/task/${!this.dataForm.id ? 'save' : 'update'}`),
-              method: 'post',
-              data: this.$http.adornData({
-                'id': this.dataForm.id || undefined,
-                'handlerName': this.handlerType,
-                'executorParam': this.executorParam,
-                'executorTimeout': 0,
-                'executorFailRetryCount': this.dataForm.executorFailRetryCount,
-              })
+              url: this.$http.adornUrl(`/config/${this.dataForm.configFileId}`),
+              method: 'get',
+              params: this.$http.adornParams()
             }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.$message({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500,
-                  onClose: () => {
-                    this.visible = false
-                    this.$emit('refreshDataList')
+              if (data && data.code == 0) {
+                this.executorParam = "configFilePath=" + data.configFilePath + ",simulateTimePeriod=" + this.dataForm.simulateTimePeriod
+                console.log(this.executorParam)
+                this.$http({
+                  url: this.$http.adornUrl(`/task/${!this.dataForm.id ? 'save' : 'update'}`),
+                  method: 'post',
+                  data: this.$http.adornData({
+                    'id': this.dataForm.id || undefined,
+                    'handlerName': this.handlerType,
+                    'executorParam': this.executorParam,
+                    'executorTimeout': 0,
+                    'executorFailRetryCount': this.dataForm.executorFailRetryCount,
+                  })
+                }).then(({data}) => {
+                  if (data && data.code === 0) {
+                    this.$message({
+                      message: '操作成功',
+                      type: 'success',
+                      duration: 1500,
+                      onClose: () => {
+                        this.visible = false
+                        this.$emit('refreshDataList')
+                      }
+                    })
+                  } else {
+                    this.$message.error(data.msg)
                   }
                 })
-              } else {
-                this.$message.error(data.msg)
               }
             })
           }

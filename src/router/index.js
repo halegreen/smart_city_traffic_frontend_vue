@@ -6,6 +6,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import http from '@/utils/httpRequest'
+import httpMultipart from '@/utils/httpMultipart'
 import { isURL } from '@/utils/validate'
 import { clearLoginInfo } from '@/utils'
 import { nav } from '@/mock/modules/sys-menu'

@@ -1,13 +1,8 @@
 <template>
-  <div class="mod-plan">
+  <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.id" placeholder="Plan ID" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button  type="primary" @click="addOrUpdateHandle()">添加新的仿真配置</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -26,49 +21,19 @@
         prop="id"
         header-align="center"
         align="center"
-        label="Plan ID">
+        label="Config ID">
       </el-table-column>
       <el-table-column
-        prop="trafficLightId"
+        prop="fileName"
         header-align="center"
         align="center"
-        label="信号灯ID">
+        label="配置文件名称">
       </el-table-column>
       <el-table-column
-        prop="junctionId"
+        prop="addTime"
         header-align="center"
         align="center"
-        label="交叉口ID">
-      </el-table-column>
-      <el-table-column
-        prop="timePeriod"
-        header-align="center"
-        align="center"
-        label="适用的一天中时段">
-      </el-table-column>
-      <el-table-column
-        prop="linkIdList"
-        header-align="center"
-        align="center"
-        label="连接的路段列表">
-      </el-table-column>
-      <el-table-column
-        prop="phaseIdList"
-        header-align="center"
-        align="center"
-        label="相位列表">
-      </el-table-column>
-    
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
-        <template slot-scope="scope">
-          <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button>
-          <el-button  type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
-        </template>
+        label="创建时间">
       </el-table-column>
     </el-table>
     <el-pagination
@@ -86,7 +51,7 @@
 </template>
 
 <script>
- import AddOrUpdate from './plan-add-or-update'
+ import AddOrUpdate from './config-add'
   export default {
     data () {
       return {
@@ -113,7 +78,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/trafficlight/list'),
+          url: this.$http.adornUrl('/config/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -152,36 +117,6 @@
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
         })
-      },
-      // 删除
-      deleteHandle (id) {
-        var userIds = id ? [id] : this.dataListSelections.map(item => {
-          return item.userId
-        })
-        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/trafficlight/delete'),
-            method: 'post',
-            data: this.$http.adornData(userIds, false)
-          }).then(({data}) => {
-            if (data && data.code === 0) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        }).catch(() => {})
       }
     }
   }
