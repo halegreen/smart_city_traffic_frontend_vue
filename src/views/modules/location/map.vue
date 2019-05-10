@@ -8,6 +8,9 @@
                               :on-search-result="onSearchResult">
           </el-amap-search-box>
         </el-form-item>
+        <el-form-item>
+            <el-button  type="primary" @click="showRoadInfo()">查看该区域路网结构</el-button>
+        </el-form-item>
       </el-form>
 
       <div class="amap-wrapper">
@@ -26,12 +29,14 @@
       </div>
     <!-- 弹窗, 新增Map -->
     <add-location v-if="addLocationVisible" ref="AddLocation" ></add-location>
+    <RoadInfo v-if="roadVisible" ref="RoadInfo" ></RoadInfo>
 
   </div>
 </template>
 
 <script>
  import AddLocation from './map-add'
+ import RoadInfo from './roadInfo'
 
   export default {
 
@@ -112,11 +117,13 @@
         markers: [],
         //地图窗口
         windows: [],
-        windowitem: ''
+        windowitem: '',
+        roadVisible: false,
       }
     },
     components: {
-      AddLocation
+      AddLocation,
+      RoadInfo,
     },
     activated () {
       //this.getDataList()
@@ -196,6 +203,12 @@
         this.addLocationVisible = true
         this.$nextTick(() => {
           this.$refs.AddLocation.init(this.dataForm,this.choesLocation)
+        })
+      },
+      showRoadInfo () {
+        this.roadVisible = true
+        this.$nextTick(() => {
+          this.$refs.RoadInfo.init()
         })
       },
 
