@@ -7,11 +7,10 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <el-card>
-        <div id="myChart1"  style="width: 600px;height:400px;"></div>
+            <div id="myChart1"  style="width: 600px;height:400px;"></div>
         </el-card>
       </el-col>
      </el-row>
-    
 </el-dialog>
 </template>
 
