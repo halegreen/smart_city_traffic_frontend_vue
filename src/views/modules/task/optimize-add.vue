@@ -11,7 +11,7 @@
         <el-input v-model="dataForm.timeRange" placeholder="输入需要优化的该路口的时间段"></el-input>
       </el-form-item>
       <el-form-item label="算法模型" prop="modelType">
-        <el-input v-model="dataForm.executorFailRetryCount" placeholder="输入算法模型类型名称qlearning/spsa"></el-input>
+        <el-input v-model="dataForm.modelType" placeholder="输入算法模型类型名称qlearning/spsa"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

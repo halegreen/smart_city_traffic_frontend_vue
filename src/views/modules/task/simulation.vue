@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button  type="primary" @click="addOrUpdateHandle()">新增仿真任务 模拟交通流量</el-button>
         <el-button  type="primary" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
       </el-form-item>
     </el-form>
@@ -29,12 +29,12 @@
         width="80"
         label="Task ID">
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="addTime"
         header-align="center"
         align="center"
         label="新建时间">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="updateTime"
         header-align="center"
@@ -53,7 +53,7 @@
         align="center"
         label="执行参数">
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="executorTimeout"
         header-align="center"
         align="center"
@@ -64,7 +64,7 @@
         header-align="center"
         align="center"
         label="执行器失败重试次数">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="taskStatus"
         header-align="center"
