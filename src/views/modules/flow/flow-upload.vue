@@ -1,10 +1,10 @@
 <template>
   <el-dialog
-    :title="上传仿真配置文件"
+    :title="上传车流文件"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="form">
-    <el-form-item label="上传仿真配置文件" :label-width="formLabelWidth">
+    <el-form-item label="上传车流文件" :label-width="formLabelWidth">
       <el-upload
         ref="upload"
         action="https://jsonplaceholder.typicode.com/posts/"
@@ -20,7 +20,7 @@
         :file-list="fileList">
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传xml格式，请先上传路网配置文件，再上传车流配置文件，再上传additional文件</div>
+        <div class="el-upload__tip" slot="tip">暂时只支持execl格式的车流文件上传</div>
       </el-upload>
     </el-form-item>
     <el-form-item>
@@ -28,24 +28,6 @@
       <el-button @click="visible = false">取消</el-button>
     </el-form-item>
   </el-form>
-    <!-- <el-upload 
-    ref="upload"
-    action="https://jsonplaceholder.typicode.com/posts/"
-    :headers="headers"
-    :on-preview="handlePreview"
-    :on-remove="handleRemove"
-     name="fileName"
-     accept=".xml"
-     multiple
-    :on-success="handleAvatarSuccess"
-    :limit="2">
-        <el-button  type="primary">选取文件</el-button>
-        <div slot="tip" class="el-upload__tip">请上传xml格式的仿真路网文件和车流文件</div>
-    </el-upload>
-    <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="uploadFile">立即上传</el-button>
-      <el-button @click="visible = false">取消</el-button>
-    </span> -->
   </el-dialog>
 </template>
 
@@ -57,7 +39,7 @@ export default {
       return {
         visible: false,
         handlerType: '',
-        limitNum: 3,
+        limitNum: 2,
         formLabelWidth: '200px',
         form: {
             file: ''
@@ -78,18 +60,16 @@ export default {
        },
        // 设置上传地址
        uploadActionUrl () {
-          return this.$http.adornUrl(`/config/upload`)
+          return this.$http.adornUrl(`/flow/upload`)
        },
       //上传文件
       uploadFile() {
         // this.$refs.upload.submit()
         let fd = new FormData()
         console.log(this.allFile)
-        fd.append('roadFile', this.allFile[0])
-        fd.append('rouFile', this.allFile[1])
-        fd.append('additionalFile', this.allFile[2])
+        fd.append('flowFile', this.allFile[0])
         this.$httpMultipart({
-              url: this.$httpMultipart.adornUrl(`/config/upload`),
+              url: this.$httpMultipart.adornUrl(`/flow/upload`),
               method: 'post',
               data: fd
             }).then(({data}) => {

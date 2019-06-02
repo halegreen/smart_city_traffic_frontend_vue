@@ -23,6 +23,7 @@
       
       <el-form-item>
         <el-button type="primary" @click="queryData()">查询</el-button>
+        <el-button  type="danger" @click="uploadHandle()">导入外部流量</el-button>
       </el-form-item>
     </el-form>
 
@@ -83,31 +84,31 @@
         prop="volumeQ"
         header-align="center"
         align="center"
-        label="流量">
+        label="流量(辆/s)">
       </el-table-column>
       <el-table-column
         prop="thetaT"
         header-align="center"
         align="center"
-        label="时间占有率">
+        label="车道占有率">
       </el-table-column>
       <el-table-column
         prop="velocityV"
         header-align="center"
         align="center"
-        label="平均行程速度">
+        label="平均行程速度(m/s)">
       </el-table-column>
       <el-table-column
         prop="avgQueueLength"
         header-align="center"
         align="center"
-        label="平均排队长度">
+        label="排队长度(辆)">
       </el-table-column>
       <el-table-column
         prop="avgQueueTime"
         header-align="center"
         align="center"
-        label="平均排队延误时间">
+        label="排队延误时间(s)">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -132,10 +133,12 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <upload v-if="uploadVisible" ref="upload" @refreshDataList="getDataList"></upload>
   </div>
 </template>
 
 <script>
+ import Upload from './flow-upload'
  import AddOrUpdate from './flow-update'
   export default {
     data () {
@@ -165,11 +168,13 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
+        uploadVisible: false,
         linkIdList: []
       }
     },
     components: {
-      AddOrUpdate
+      AddOrUpdate,
+      Upload
     },
     activated () {
       this.getDataList()
@@ -218,6 +223,13 @@
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
+        })
+      },
+      // 上传
+      uploadHandle (id) {
+        this.uploadVisible = true
+        this.$nextTick(() => {
+          this.$refs.upload.init(id)
         })
       },
       // 删除
