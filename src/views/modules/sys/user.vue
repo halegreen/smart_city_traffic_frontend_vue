@@ -123,7 +123,7 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'username': this.dataForm.userName
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'username': this.dataForm.userName
           })
         }).then(({data}) => {
           if (data && data.code === 0) {

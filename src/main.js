@@ -12,6 +12,9 @@ import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/a
 import httpMultipart from '@/utils/httpMultipart'
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
+//新加的ztree相关
+import '@/views/modules/zTree/zTreeStyle/css/zTreeStyle.css'
+import '@/views/modules/location/ztree.vue'
 
 Vue.use(VueCookie)
 Vue.use(VueAMap)
