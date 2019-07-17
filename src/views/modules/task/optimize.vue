@@ -10,6 +10,7 @@
         <el-button  type="primary" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
       </el-form-item>
     </el-form>
+
     <el-table
       :data="dataList"
       border
@@ -253,7 +254,7 @@
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  
+
                   this.getDataList()
                 }
               })
