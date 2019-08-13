@@ -33,7 +33,15 @@
           <div id="J_chartLine" class="chart-line"></div>
         </el-card>
       </el-col>
+      <el-col :span="12">
+        <el-card>
+          <!-- <div id="J_chartPieBox" class="chart-box"></div> -->
+          <div id="J_chartPieBox" class="chart-box"></div>
+        </el-card>
+      </el-col>
     </el-row>
+
+
   </div>
 </template>
 
@@ -105,6 +113,7 @@
             this.seriesData.push(item)
           }
           this.initLineChart()
+          this.initChartPie()
         })
       },
       //
@@ -124,8 +133,7 @@
       initChartPie () {
         var option = {
           title: {
-            text: '覆盖小区统计',
-            subtext: '按成都市已覆盖区统计',
+            text: '路段统计',
             left: 'center',
             top: 20
           },
@@ -273,6 +281,9 @@
       }
     }
     .chart-line {
+      min-height: 500px;
+    }
+    .chart-box {
       min-height: 500px;
     }
   }
