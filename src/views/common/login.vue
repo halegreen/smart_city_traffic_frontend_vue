@@ -21,7 +21,7 @@
                   <el-input v-model="dataForm.captcha" placeholder="验证码">
                   </el-input>
                 </el-col>
-                <el-col :span="10" class="login-captcha">
+               <el-col :span="10" class="login-captcha">
                   <img :src="captchaPath" @click="getCaptcha()" alt="">
                 </el-col>
               </el-row>

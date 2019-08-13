@@ -1,29 +1,30 @@
+
 <template>
   <div>
-      <el-form :inline="true">
-        <el-form-item label-width="30px">
-          <el-amap-search-box class="search-box"
+    <el-form :inline="true">
+      <el-form-item label-width="30px">
+        <el-amap-search-box class="search-box"
 
-                              :search-option="searchOption"
-                              :on-search-result="onSearchResult">
-          </el-amap-search-box>
-        </el-form-item>
-      </el-form>
+                            :search-option="searchOption"
+                            :on-search-result="onSearchResult">
+        </el-amap-search-box>
+      </el-form-item>
+    </el-form>
 
-      <div class="amap-wrapper">
-        <el-amap vid="amap" :plugin="plugin"  :center="center" :zoom ="zoom">
-          <div v-if=" markersflag == true ">
-              <el-amap-marker  v-for="(marker,idx) in markers" :key= "idx" :position="marker.marker" :events="marker.events"></el-amap-marker>
-            <el-amap-info-window v-if="windowitem" :position="windowitem.position" :visible="windowitem.visible" :content="windowitem.content"></el-amap-info-window>
-          </div>
-        </el-amap>
-        <div class="toolbar">
+    <div class="amap-wrapper">
+      <el-amap vid="amap" :plugin="plugin"  :center="center" :zoom ="zoom">
+        <div v-if=" markersflag == true ">
+          <el-amap-marker  v-for="(marker,idx) in markers" :key= "idx" :position="marker.marker" :events="marker.events"></el-amap-marker>
+          <el-amap-info-window v-if="windowitem" :position="windowitem.position" :visible="windowitem.visible" :content="windowitem.content"></el-amap-info-window>
+        </div>
+      </el-amap>
+      <div class="toolbar">
         <span v-if="loaded">
           当前所在位置:  {{ locationinfor }}
         </span>
-          <span v-else>正在定位</span>
-        </div>
+        <span v-else>正在定位</span>
       </div>
+    </div>
     <!-- 弹窗, 新增Map -->
     <add-location v-if="addLocationVisible" ref="AddLocation" ></add-location>
 
@@ -31,10 +32,8 @@
 </template>
 
 <script>
- import AddLocation from './map-add'
-
+  import AddLocation from './map-add'
   export default {
-
     data () {
       let self = this;
       return {
@@ -79,9 +78,9 @@
         plugin: [{
           pName: 'Geolocation',
           events: {
-           init (o) {
+            init (o) {
               // o 是高德地图定位插件实例
-             self.clearmarkers()
+              self.clearmarkers()
               o.getCurrentPosition((status, result) => {
                 if (result && result.position) {
                   console.log("当前地址:"+result.formattedAddress)
@@ -104,8 +103,6 @@
                 }
               });
             },
-
-
           }
         }],
         markersflag: false,
@@ -132,6 +129,7 @@
         if (pois.length > 0) {
           if (pois.length < markerNum) {
             markerNum = pois.length
+
           }
           for (let i = 0;i<markerNum;i++){
             let poi = pois[i]
@@ -152,9 +150,8 @@
                     self.window.visible = true;
                   });*/
                   console.log(self.windows[0])
-                 /* let windowItem = self.windows[0];
-                  self.windowitem = windowItem;*/
-
+                  /* let windowItem = self.windows[0];
+                   self.windowitem = windowItem;*/
                 }
               }
             });
@@ -198,7 +195,6 @@
           this.$refs.AddLocation.init(this.dataForm,this.choesLocation)
         })
       },
-
       setdataForm(lng,lat){
         let tself = this;
         var geocoder = new AMap.Geocoder({
@@ -234,9 +230,6 @@
       }
     }
   }
-
-
-
 </script>
 <style>
   .amap-wrapper {
@@ -258,3 +251,4 @@
     line-height:14px;
   }
 </style>
+

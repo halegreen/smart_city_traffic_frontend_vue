@@ -17,6 +17,7 @@
     "axios": "0.17.1",
     "babel-plugin-component": "0.10.1",
     "babel-polyfill": "6.26.0",
+    "echarts": "^4.2.1",
     "element-ui": "2.3.2",
     "gulp-concat": "2.6.1",
     "gulp-load-plugins": "1.5.0",
@@ -83,6 +84,9 @@
     "shelljs": "0.7.6",
     "style-loader": "^0.23.1",
     "stylus-loader": "^3.0.2",
+
+    "stylus": "0.52.4",
+
     "uglifyjs-webpack-plugin": "1.1.1",
     "url-loader": "0.5.8",
     "vue-jest": "1.0.2",

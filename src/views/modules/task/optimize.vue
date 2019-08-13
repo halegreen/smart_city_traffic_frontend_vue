@@ -10,6 +10,7 @@
         <el-button  type="primary" @click="runHandle()" :disabled="dataListSelections.length <= 0">批量立即执行</el-button>
       </el-form-item>
     </el-form>
+
     <el-table
       :data="dataList"
       border
@@ -29,12 +30,12 @@
         width="80"
         label="Task ID">
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="addTime"
         header-align="center"
         align="center"
         label="新建时间">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="updateTime"
         header-align="center"
@@ -48,12 +49,24 @@
         label="处理器名称">
       </el-table-column>
       <el-table-column
-        prop="executorParam"
+        prop="junctionId"
         header-align="center"
         align="center"
-        label="执行参数">
+        label="优化路口id">
       </el-table-column>
       <el-table-column
+        prop="timeRange"
+        header-align="center"
+        align="center"
+        label="算法适用时间段">
+      </el-table-column>
+      <el-table-column
+        prop="modelType"
+        header-align="center"
+        align="center"
+        label="算法模型">
+      </el-table-column>
+      <!-- <el-table-column
         prop="executorTimeout"
         header-align="center"
         align="center"
@@ -64,7 +77,7 @@
         header-align="center"
         align="center"
         label="执行器失败重试次数">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         prop="taskStatus"
         header-align="center"
@@ -144,7 +157,22 @@
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
-            this.dataList = data.page.list
+            var tList = data.page.list
+            var tParam = data.params
+            var t = []
+            for (var i = 0; i < tList.length; i++) {
+              var item = {
+                'id': tList[i].id,
+                'updateTime': tList[i].updateTime,
+                'handlerName': tList[i].handlerName,
+                'junctionId': tParam[i].junctionId,
+                'timeRange': tParam[i].timeRange,
+                'modelType': tParam[i].modelType,
+                'taskStatus': tList[i].taskStatus
+              }
+              t.push(item)
+            }
+            this.dataList = t
             this.totalPage = data.page.totalCount
           } else {
             this.dataList = []
@@ -226,7 +254,7 @@
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  
+
                   this.getDataList()
                 }
               })
