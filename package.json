@@ -23,12 +23,14 @@
     "gulp-load-plugins": "1.5.0",
     "gulp-replace": "0.6.1",
     "gulp-shell": "0.6.5",
+    "leaflet": "^1.5.1",
     "lodash": "4.17.5",
     "svg-sprite-loader": "3.7.3",
     "vue": "2.5.2",
     "vue-amap": "^0.5.8",
     "vue-cookie": "1.1.4",
     "vue-router": "3.0.1",
+    "vue2-leaflet": "^2.1.1",
     "vuex": "3.0.1"
   },
   "devDependencies": {

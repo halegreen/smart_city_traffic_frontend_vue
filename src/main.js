@@ -12,6 +12,7 @@ import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/a
 import httpMultipart from '@/utils/httpMultipart'
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
+import 'leaflet/dist/leaflet.css'
 
 Vue.use(VueCookie)
 Vue.use(VueAMap)

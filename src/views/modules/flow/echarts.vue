@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="mod-flow-echarts">
       <el-form :inline="true" :model="searchData" @keyup.enter.native="getDataList()">
       <el-form-item label="路段id">
@@ -7,7 +8,7 @@
             v-for="item in linkIdList"
             :key="item.id"
             :label="item.linkId"
-            :value="item.linkId">   
+            :value="item.linkId">
         </el-option>
         </el-select>
        </el-form-item>
@@ -20,7 +21,7 @@
              <el-date-picker type="date" placeholder="选择结束时间" v-model="searchData.endTime" ></el-date-picker>
         </el-col>
       </el-form-item>
-      
+
       <el-form-item>
         <el-button type="primary" @click="getDataList()">查询</el-button>
       </el-form-item>
@@ -35,35 +36,45 @@
       </el-col>
     </el-row>
   </div>
+    <geo-json></geo-json>
+  </div>
 </template>
 
 <script>
   import echarts from 'echarts'
+  import GeoJson from './geojson'
+
   export default {
+    components: {GeoJson},
+    computed: {
+      edgeFrom: {
+        get () { return this.$store.state.user.name }
+      }
+    },
     data () {
       return {
         chartPie: null,
         chartLine: null,
-        pageData:[{
-          name:'',
+        pageData: [{
+          name: '',
           dataList: []
         }],
-        nameFrom:[],
-        numFrom:[],
+        nameFrom: [],
+        numFrom: [],
         linkIdList: [],
-        seriesData:[{
-          name:'',
-          type:'line',
-          smooth:true,
+        seriesData: [{
+          name: '',
+          type: 'line',
+          smooth: true,
           itemStyle: {normal: {areaStyle: {type: 'default'}}},
-          data:[]
+          data: []
         }],
         timeSeriesData: [],
-        searchData:{
+        searchData: {
           linkId: '',
           startTime: '',
           endTime: ''
-        },
+        }
       }
     },
     mounted () {
@@ -75,7 +86,6 @@
       if (this.chartLine) {
         this.chartLine.resize()
       }
-
     },
     methods: {
       getDataList () {
@@ -84,9 +94,9 @@
           url: this.$http.adornUrl('/flow/linechart'),
           method: 'get',
           params: this.$http.adornParams({
-                'linkId': this.searchData.linkId,
-                'startTime': this.searchData.startTime,
-                'endTime': this.searchData.endTime
+            'linkId': this.searchData.linkId,
+            'startTime': this.searchData.startTime,
+            'endTime': this.searchData.endTime
           })
         }).then(({data}) => {
           this.pageData = data.page;
@@ -107,18 +117,39 @@
           this.initLineChart()
         })
       },
+      getDataList1 () {
+        this.dataListLoading = true
+        this.$http({
+          url: this.$http.adornUrl('/sys/user/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'page': this.pageIndex,
+            'limit': this.pageSize,
+            'username': this.dataForm.userName
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.dataList = data.page.list
+            this.totalPage = data.page.totalCount
+          } else {
+            this.dataList = []
+            this.totalPage = 0
+          }
+          this.dataListLoading = false
+        })
+      },
       //
-      getLinkIdList() {
-            this.dataListLoading = true
-            this.$http({
-                url: this.$http.adornUrl('/road/all'),
-                method: 'get'
-            }).then(({data}) => {
-                if (data && data.code === 0) {
-                    this.linkIdList = data.page.list;
-                } 
-                this.dataListLoading = false
-            })
+      getLinkIdList () {
+        this.dataListLoading = true
+        this.$http({
+          url: this.$http.adornUrl('/road/all'),
+          method: 'get'
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.linkIdList = data.page.list;
+          }
+          this.dataListLoading = false
+        })
       },
       // 饼状图
       initChartPie () {
@@ -129,7 +160,7 @@
             left: 'center',
             top: 20
           },
-          //提示主键框
+          // 提示主键框
           tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -139,15 +170,15 @@
               'saveAsImage': { }
             }
           },
-          /*visualMap: {
+          /* visualMap: {
             show: false,
             min: 80,
             max: 600,
             inRange: {
               colorLightness: [0, 1]
             }
-          },*/
-          //图案主键
+          }, */
+          // 图案主键
           legend: {
             type: 'scroll',
             orient: 'vertical',
@@ -163,9 +194,9 @@
               type: 'pie',
               radius: '55%',
               center: ['50%', '50%'],
-              data:  this.seriesData.sort(function (a, b) { return a.value - b.value }),
-              //设置指示线
-              /*label: {
+              data: this.seriesData.sort(function (a, b) { return a.value - b.value }),
+              // 设置指示线
+              /* label: {
                 normal: {
                   textStyle: {
                     color: 'rgba(0, 0, 0, 0.5)'
@@ -181,7 +212,7 @@
                   length: 10,
                   length2: 20
                 }
-              },*/
+              }, */
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -204,9 +235,9 @@
           this.chartPie.resize()
         })
       },
-      //折线图
+      // 折线图
       initLineChart () {
-          var option = {
+        var option = {
             // title : {
             //     text: '交通流量特征可视化',
             //     },
@@ -216,48 +247,49 @@
             //     bottom:'1%',
             //     containLabel:true
             // },
-            tooltip : {
-                trigger: 'axis'
-            },
-            legend: {
-                data:['流量','平均行程速度','平均排队等待时间', '车流占据道路的时间比率', '平均排队长度']
-            },
-            toolbox: {
-                show : true,
-                feature : {
-                    mark : {show: true},
-                    dataView : {show: true, readOnly: false},
-                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-                    restore : {show: true},
-                    saveAsImage : {show: true}
-                }
-            },
-            calculable : true,
-            xAxis : [
-                {
-                    type : 'category',
-                    boundaryGap : false,
-                    data : this.timeSeriesData
-                }
-            ],
-            yAxis : [
-                {
-                    type : 'value'
-                }
-            ],
-            series : this.seriesData
-          }
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['流量','平均行程速度','平均排队等待时间', '车流占据道路的时间比率', '平均排队长度']
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: {show: true},
+              dataView: {show: true, readOnly: false},
+              magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
+          calculable: true,
+          xAxis: [
+            {
+              type: 'category',
+              boundaryGap: false,
+              data: this.timeSeriesData
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: this.seriesData
+        }
 
-          this.chartLine = echarts.init(document.getElementById('J_chartLine'))
-          this.chartLine.setOption(option)
-           window.addEventListener('resize', () => {
-            this.chartLine.resize()
-           })
+        this.chartLine = echarts.init(document.getElementById('J_chartLine'))
+        this.chartLine.setOption(option)
+        window.addEventListener('resize', () => {
+          this.chartLine.resize()
+        })
       }
-
     }
   }
 </script>
+
+
 
 <style lang="scss">
   .mod-flow-echarts {
