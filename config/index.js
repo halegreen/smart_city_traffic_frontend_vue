@@ -15,7 +15,8 @@ module.exports = {
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
         // target: 'http://120.79.81.9:8080/city-fire/',
-        target: 'http://localhost:8099/city-fire/',  //知道了，因为之前都是使用的另外的请求地址
+        target: 'http://127.0.0.1:8099/city-fire/',  //知道了，因为之前都是使用的另外的请求地址
+
         changeOrigin: true,
         pathRewrite: {
           '^/proxyApi': '/'
@@ -24,9 +25,8 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '127.0.0.1', // can be overwritten by process.env.HOST
     port: 8888, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    autoOpenBrowser: true,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
